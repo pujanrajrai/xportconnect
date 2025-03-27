@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPORTCONNECT - Import Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#013365',
+            secondary: '#04ADEF',
+            background: '#F7F7F7',
+            dark: '#141927',
+            accent: '#FF6B6B',
+            success: '#4CAF50',
+            navy: {
+              DEFAULT: '#00467C',
+              light: '#1E4775'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Poppins', 'sans-serif'],
+          },
+        }
+      }
+    }
+    </script>
+    <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #141927;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      color: #141927;
+    }
+    .section-fade {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .section-fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #04ADEF 0%, #004075 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    /* Loader Styles */
+    .loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #004075;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .loader-wrapper.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loader-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      padding: 0 0.5rem;
+    }
+    .loader-text span {
+      color: #04ADEF;
+    }
+    .loader {
+      width: 50px;
+      height: 4px;
+      background: #04ADEF;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+      border-radius: 2px;
+      animation: loaderWidth 0.5s ease-out forwards 0.5s;
+    }
+    .loader::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-100%);
+      animation: loaderSlide 1s ease-in-out infinite;
+    }
+    @keyframes loaderWidth {
+      from {
+        width: 50px;
+      }
+      to {
+        width: 200px;
+      }
+    }
+    @keyframes loaderSlide {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    .loader-text::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background: #004075;
+      transform: translateX(-100%);
+      animation: revealText 0.5s ease-out forwards;
+    }
+    @keyframes revealText {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    /* Progress Bar Styles */
+    #progress-bar {
+      opacity: 0;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #progress {
+      width: 0%;
+      transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Button Hover Effects */
+    .group {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .group:hover {
+      transform: translateY(-2px);
+    }
+    .group i {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .group:hover i {
+      transform: translateX(4px);
+    }
+    /* Mobile Menu Transitions */
+    #mobileMenu {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Scroll Indicator Animation */
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+    .animate-bounce {
+      animation: bounce 2s infinite;
+    }
+    .text-48 {
+      font-size: 48px;
+      line-height: 1.1;
+    }
+    .text-24 {
+      font-size: 24px;
+      line-height: 1.3;
+    }
+    .text-20 {
+      font-size: 20px;
+      line-height: 1.4;
+    }
+    .text-14 {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .text-12 {
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .navbar-scrolled {
+      background-color: white !important;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    
+    .navbar-scrolled .nav-link {
+      color: #141927 !important;
+    }
+    
+    .navbar-scrolled .nav-link:hover {
+      color: #04ADEF !important;
+    }
+    
+    .navbar-scrolled .nav-logo-secondary {
+      color: #141927 !important;
+    }
+    
+    .navbar-scrolled .nav-toggle {
+      color: #141927 !important;
+    }
+    </style>
+  </head>
+  <body class="bg-background text-dark">
+    <!-- Loader -->
+    <div id="loader" class="loader-wrapper">
+      <div class="loader-text">
+        <span>XPORT</span>CONNECT
+      </div>
+      <div class="loader"></div>
+    </div>
+    <!-- Navbar -->
+    <nav id="navbar"
+         class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-6">
+      <div class="container mx-auto px-6 flex justify-between items-center">
+        <a href="#home" class="text-2xl md:text-3xl font-bold relative z-10">
+          <span class="text-[#04ADEF] nav-logo-primary">XPORT</span><span class="text-white nav-logo-secondary">CONNECT</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#home"
+             class="text-14 font-medium text-white nav-link hover:text-[#04ADEF] transition-colors">Home</a>
+          <a href="#import"
+             class="text-14 font-medium text-white nav-link hover:text-[#04ADEF] transition-colors">Import</a>
+          <a href="#how"
+             class="text-14 font-medium text-white nav-link hover:text-[#04ADEF] transition-colors">How We Import</a>
+          <a href="#services"
+             class="text-14 font-medium text-white nav-link hover:text-[#04ADEF] transition-colors">Services</a>
+          <a href="#about"
+             class="text-14 font-medium text-white nav-link hover:text-[#04ADEF] transition-colors">About</a>
+          <a href="#contact"
+             class="text-14 font-medium text-white nav-link hover:text-[#04ADEF] transition-colors">Contact</a>
+        </div>
+        <button id="menuToggle"
+                class="md:hidden text-white nav-toggle focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobileMenu"
+           class="md:hidden fixed inset-0 bg-white z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+          <div class="flex justify-between items-center p-6 border-b">
+            <a href="#home" class="text-2xl font-bold">
+              <span class="text-primary">XPORT</span>CONNECT
+            </a>
+            <button id="closeMenu" class="text-secondary focus:outline-none">
+              <i class="fas fa-times text-2xl"></i>
+            </button>
+          </div>
+          <div class="flex flex-col p-6 space-y-4">
+            <a href="#home"
+               class="text-base font-medium hover:text-primary transition-colors">Home</a>
+            <a href="#import"
+               class="text-base font-medium hover:text-primary transition-colors">Import</a>
+            <a href="#how"
+               class="text-base font-medium hover:text-primary transition-colors">How We Import</a>
+            <a href="#services"
+               class="text-base font-medium hover:text-primary transition-colors">Services</a>
+            <a href="#about"
+               class="text-base font-medium hover:text-primary transition-colors">About</a>
+            <a href="#contact"
+               class="text-base font-medium hover:text-primary transition-colors">Contact</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Progress Bar -->
+    <div id="progress-bar"
+         class="fixed top-0 left-0 w-full h-1 bg-primary/20 z-50">
+      <div id="progress" class="h-full bg-primary"></div>
+    </div>
+    <!-- Hero Section -->
+    <section id="home"
+             class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#003366]/90">
+      <!-- Background Overlay with Building Image -->
+      <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-r from-[#003366]/80 to-[#003366]/60 z-10"></div>
+        <img src="public/background.jpg"
+             alt="Background"
+             width="1920"
+             height="1080"
+             class="w-full h-full object-cover opacity-40">
+      </div>
+      <!-- Content -->
+      <div class="container mx-auto px-6 relative z-20 pt-20">
+        <div class="max-w-5xl p-8 mx-auto text-center">
+          <!-- Established Tag -->
+          <div class="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm mb-8 text-white/90 text-14">
+            Established 2021 • Over 2 Years of Excellence
+          </div>
+          <!-- Main Heading -->
+          <h1 class="text-48 font-bold mb-6 text-white leading-tight tracking-tight">
+            Import Solutions
+            <br />
+            <span class="text-[#04ADEF]">Made Simple</span>
+          </h1>
+          <!-- Description -->
+          <p class="text-20 text-white/90 max-w-3xl mx-auto mb-12 leading-relaxed">
+            We facilitate seamless imports from China and India to Nepal, ensuring a smooth and efficient connection.
+            Simply place your order, and we guarantee fast and hassle-free delivery.
+          </p>
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+            <a href="#import"
+               class="px-8 py-4 bg-[#04ADEF] hover:bg-[#04ADEF]/90 text-white rounded-lg transition-all duration-300 font-medium text-lg flex items-center justify-center gap-2 hover:transform hover:-translate-y-1 hover:shadow-lg group">
+              Start Importing
+              <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+            </a>
+            <a href="#services"
+               class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 font-medium text-lg flex items-center justify-center backdrop-blur-sm border border-white/20 hover:border-white/40">
+              Our Services
+            </a>
+          </div>
+          <!-- Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-white">
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold mb-2 text-[#04ADEF]">2+</div>
+              <div class="text-sm text-white/80">Years Experience</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold mb-2 text-[#04ADEF]">500+</div>
+              <div class="text-sm text-white/80">Happy Clients</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold mb-2 text-[#04ADEF]">1000+</div>
+              <div class="text-sm text-white/80">Products Imported</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold mb-2 text-[#04ADEF]">24/7</div>
+              <div class="text-sm text-white/80">Support Available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Import Section -->
+    <section id="import" class="py-24 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <div class="inline-block px-4 py-1 bg-primary/10 rounded-full text-primary text-14 font-medium mb-4">
+            SEAMLESS IMPORT PROCESS
+          </div>
+          <div class="max-w-5xl mx-auto">
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <div class="grid md:grid-cols-2 gap-0">
+                <div class="bg-gradient-to-br from-secondary to-secondary/90 p-8 md:p-12 text-white relative">
+                  <div class="relative z-10">
+                    <h2 class="text-48 text-primary font-bold mb-6">Start Your Import Journey</h2>
+                    <p class="mb-8 text-20 text-white/90 leading-relaxed">
+                      Simply paste any product link from Alibaba, Taobao, Made-in-China, or other online marketplaces.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-white/80 text-14">
+                      <div class="flex items-center gap-2">
+                        <i class="fas fa-globe"></i>
+                        <span>All platforms supported</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure process</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="absolute bottom-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mb-16 z-0"></div>
+                  <div class="absolute top-0 left-0 w-20 h-20 bg-primary/10 rounded-full -ml-10 -mt-10 z-0"></div>
+                </div>
+                <div class="p-8 md:p-12 bg-white">
+                  <form id="importForm"
+                        class="h-full flex flex-col justify-center max-w-md mx-auto">
+                    <div class="mb-8">
+                      <label for="product-url"
+                             class="block text-14 font-medium text-gray-700 mb-2">Product URL</label>
+                      <input type="url"
+                             id="product-url"
+                             placeholder="https://www.alibaba.com/product/..."
+                             class="text-14 w-full px-4 py-4 rounded-lg border">
+                      <p class="text-12 text-gray-500 mt-3">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Enter a direct link to the product you want to import
+                      </p>
+                    </div>
+                    <button type="submit"
+                            id="submitBtn"
+                            class="text-14 w-full flex items-center justify-center py-4 px-6 rounded-lg bg-primary text-white font-medium">
+                      <span class="flex items-center gap-2">
+                        Submit Import Request
+                        <i class="fas fa-arrow-right"></i>
+                      </span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-[#F8FAFC]">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16 section-fade">
+          <div class="inline-block px-4 py-1 bg-primary/10 rounded-full text-primary text-14 font-medium mb-4">WHO WE ARE</div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-dark">About Us</h2>
+          <div class="h-1 w-20 bg-primary rounded-full mx-auto mb-6"></div>
+          <p class="max-w-3xl mx-auto text-dark/70 text-lg">
+            Your trusted partner for seamless imports from China and India to Nepal
+          </p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-12 items-center section-fade">
+          <div class="order-2 md:order-1">
+            <div class="space-y-6">
+              <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-start gap-4">
+                  <div class="p-3 bg-rose-50 rounded-lg text-primary">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold mb-2">Expert Procurement</h3>
+                    <p class="text-dark/70">
+                      We specialize in providing procurement services from various online platforms,
+                      including Alibaba, Made-in-China, Myntra, Taobao, and more. Our expertise lies
+                      in helping customers identify reliable and trustworthy vendors.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-start gap-4">
+                  <div class="p-3 bg-rose-50 rounded-lg text-primary">
+                    <i class="fas fa-building"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold mb-2">Direct Factory Connections</h3>
+                    <p class="text-dark/70">
+                      We don't just source from online platforms—we also import directly from
+                      trusted factories, ensuring you get high-quality products at the best prices.
+                      By cutting out middlemen, we provide cost-effective solutions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-start gap-4">
+                  <div class="p-3 bg-rose-50 rounded-lg text-primary">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold mb-2">Experience & Reliability</h3>
+                    <p class="text-dark/70">
+                      With two years of experience in this field, we have developed a deep understanding
+                      of the import process, allowing us to offer a smooth and hassle-free shopping experience.
+                      From vendor selection to final purchase, we guide our clients through every step.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="order-1 md:order-2 relative">
+            <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[4/5]">
+              <div class="absolute inset-0 bg-gradient-to-tr from-rose-900/70 to-primary/40 mix-blend-multiply z-10"></div>
+              <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover bg-center">
+              </div>
+              <div class="absolute inset-x-0 bottom-0 p-8 z-20">
+                <div class="text-white space-y-3">
+                  <p class="text-blue-50/90">From factory to your doorstep, we make imports simple, reliable, and cost-effective.</p>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -bottom-6 -right-6 w-48 h-48 bg-rose-100 rounded-full z-[-1]"></div>
+            <div class="absolute -top-6 -left-6 w-32 h-32 bg-rose-50 rounded-full z-[-1]"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Services Section -->
+    <section id="services" class="py-24 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16 section-fade">
+          <div class="inline-block px-4 py-1 bg-primary/10 rounded-full text-primary text-14 font-medium mb-4">
+            DIVERSE SERVICE EXPERTISE
+          </div>
+          <h2 class="text-3xl md:text-5xl font-bold mb-6 text-primary">Services We Offer</h2>
+          <div class="h-1 w-24 bg-secondary rounded-full mx-auto mb-8"></div>
+          <p class="max-w-3xl mx-auto text-dark/70 text-lg">
+            Since 2021, we've been providing specialized import solutions from
+            China and India to Nepal across multiple product categories.
+          </p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16 section-fade">
+          <!-- Service 1 -->
+          <div class="flex flex-col items-center text-center group">
+            <div class="w-16 h-16 flex items-center justify-center mb-5 text-primary">
+              <i data-lucide="shopping-bag" class="w-12 h-12"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-primary">Trading & E-commerce</h3>
+            <p class="text-dark/70">
+              Business solutions for trading companies and e-commerce platforms, handling everything from procurement to delivery.
+            </p>
+          </div>
+          <!-- Service 2 -->
+          <div class="flex flex-col items-center text-center group">
+            <div class="w-16 h-16 flex items-center justify-center mb-5 text-primary">
+              <i data-lucide="box" class="w-12 h-12"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-primary">Product Sourcing</h3>
+            <p class="text-dark/70">
+              Specialized services for sourcing high-quality products from trusted suppliers across major platforms.
+            </p>
+          </div>
+          <!-- Service 3 -->
+          <div class="flex flex-col items-center text-center group">
+            <div class="w-16 h-16 flex items-center justify-center mb-5 text-primary">
+              <i data-lucide="factory" class="w-12 h-12"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-primary">Direct Factory Connections</h3>
+            <p class="text-dark/70">
+              Direct import from trusted factories, ensuring you get high-quality products at the best prices.
+            </p>
+          </div>
+          <!-- Service 4 -->
+          <div class="flex flex-col items-center text-center group">
+            <div class="w-16 h-16 flex items-center justify-center mb-5 text-primary">
+              <i data-lucide="truck" class="w-12 h-12"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-primary">Reliable Transportation</h3>
+            <p class="text-dark/70">Efficient and cost-effective transportation solutions for safe and timely delivery.</p>
+          </div>
+          <!-- Service 5 -->
+          <div class="flex flex-col items-center text-center group">
+            <div class="w-16 h-16 flex items-center justify-center mb-5 text-primary">
+              <i data-lucide="home" class="w-12 h-12"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-primary">Doorstep Delivery</h3>
+            <p class="text-dark/70">
+              Smooth and convenient delivery process, bringing your imported goods right to your doorstep.
+            </p>
+          </div>
+          <!-- Service 6 -->
+          <div class="flex flex-col items-center text-center group">
+            <div class="w-16 h-16 flex items-center justify-center mb-5 text-primary">
+              <i data-lucide="shield-check" class="w-12 h-12"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-primary">Quality Assurance</h3>
+            <p class="text-dark/70">Rigorous quality checks at every stage to ensure products meet your specifications.</p>
+          </div>
+        </div>
+        <div class="text-center mt-16 section-fade">
+          <a href="#contact"
+             class="inline-flex items-center px-8 py-3 bg-[#1E4775] hover:bg-[#1E4775]/90 text-white font-medium rounded-full transition-all duration-300 transform hover:scale-105">
+            Import Now
+            <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+    <!-- How We Import Section -->
+    <section id="how" class="py-24 bg-[#F8FAFC]">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16 section-fade">
+          <div class="inline-block px-4 py-1 bg-primary/10 rounded-full text-primary text-14 font-medium mb-4">
+            OUR IMPORT PROCESS
+          </div>
+          <h2 class="text-48 font-bold mb-4 text-dark">Our Approach</h2>
+          <p class="text-20 text-dark/70">
+            Our streamlined import process makes getting products from abroad simple and hassle-free
+          </p>
+        </div>
+        <!-- Timeline Steps -->
+        <div class="relative max-w-4xl mx-auto section-fade mb-24">
+          <!-- Vertical Timeline Line - Hidden on mobile, visible on md+ -->
+          <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-primary/20 transform -translate-x-1/2"></div>
+          <!-- Step 1 -->
+          <div class="flex flex-col md:flex-row items-center mb-12 md:mb-16 relative">
+            <div class="w-full md:w-1/2 md:pr-12 text-center md:text-right mb-6 md:mb-0">
+              <div class="mb-2 font-semibold text-14 text-primary">INITIAL CONSULTATION</div>
+              <h3 class="text-24 font-bold mb-3">Submit Your Request</h3>
+              <p class="text-14 text-dark/70">
+                We begin with a thorough consultation to understand your import needs and objectives.
+              </p>
+            </div>
+            <div class="absolute md:left-1/2 top-0 md:top-auto md:transform md:-translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg z-10 left-0 md:static">
+              1
+            </div>
+            <div class="w-full md:w-1/2 md:pl-12 pl-16 md:pl-12"></div>
+          </div>
+          <!-- Step 2 -->
+          <div class="flex flex-col md:flex-row items-center mb-12 md:mb-16 relative">
+            <div class="w-full md:w-1/2 md:pr-12 order-2 md:order-1"></div>
+            <div class="absolute md:left-1/2 top-0 md:top-auto md:transform md:-translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg z-10 left-0 md:static order-1 md:order-2">
+              2
+            </div>
+            <div class="w-full md:w-1/2 md:pl-12 pl-16 text-left order-3 md:order-3">
+              <div class="mb-2 font-semibold text-14 text-primary">STRATEGIC ANALYSIS</div>
+              <h3 class="text-24 font-bold mb-3">Product Verification</h3>
+              <p class="text-14 text-dark/70">
+                Our team conducts a comprehensive analysis of your current situation and identifies opportunities.
+              </p>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="flex flex-col md:flex-row items-center mb-12 md:mb-16 relative">
+            <div class="w-full md:w-1/2 md:pr-12 text-center md:text-right mb-6 md:mb-0">
+              <div class="mb-2 font-semibold text-14 text-primary">SOLUTION DEVELOPMENT</div>
+              <h3 class="text-24 font-bold mb-3">Order & Payment</h3>
+              <p class="text-14 text-dark/70">We develop custom solutions tailored to your unique import requirements and goals.</p>
+            </div>
+            <div class="absolute md:left-1/2 top-0 md:top-auto md:transform md:-translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg z-10 left-0 md:static">
+              3
+            </div>
+            <div class="w-full md:w-1/2 md:pl-12 pl-16"></div>
+          </div>
+          <!-- Step 4 -->
+          <div class="flex flex-col md:flex-row items-center relative">
+            <div class="w-full md:w-1/2 md:pr-12 order-2 md:order-1"></div>
+            <div class="absolute md:left-1/2 top-0 md:top-auto md:transform md:-translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg z-10 left-0 md:static order-1 md:order-2">
+              4
+            </div>
+            <div class="w-full md:w-1/2 md:pl-12 pl-16 text-left order-3 md:order-3">
+              <div class="mb-2 font-semibold text-14 text-primary">FINAL DELIVERY</div>
+              <h3 class="text-24 font-bold mb-3">Doorstep Delivery</h3>
+              <p class="text-14 text-dark/70">
+                We handle the final mile delivery to ensure your products reach you safely and on time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Contact Us Section -->
+    <section id="contact-us" class="py-24 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <div class="inline-block px-4 py-1 bg-primary/10 rounded-full text-primary text-14 font-medium mb-4">GET IN TOUCH</div>
+          <h2 class="text-48 font-bold mb-6 text-dark">Contact Us</h2>
+          <p class="text-20 text-dark/70">Have questions about importing? Our team is here to help you every step of the way.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <!-- Contact Form -->
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <form class="space-y-6">
+              <div>
+                <label class="block text-14 font-medium text-gray-700 mb-2">Full Name</label>
+                <input type="text" class="text-14 w-full px-4 py-3 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-14 font-medium text-gray-700 mb-2">Email Address</label>
+                <input type="email" class="text-14 w-full px-4 py-3 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-14 font-medium text-gray-700 mb-2">Phone Number</label>
+                <input type="tel" class="text-14 w-full px-4 py-3 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-14 font-medium text-gray-700 mb-2">Your Message</label>
+                <textarea class="text-14 w-full px-4 py-3 rounded-lg border"></textarea>
+              </div>
+              <button type="submit"
+                      class="text-14 w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 flex items-center justify-center gap-2">
+                Send Message
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+          <!-- Contact Information -->
+          <div class="flex flex-col justify-center">
+            <div class="space-y-8">
+              <!-- Office Location -->
+              <div class="flex items-start gap-6">
+                <div class="p-4 bg-primary/10 rounded-xl text-primary">
+                  <i class="fas fa-map-marker-alt text-24"></i>
+                </div>
+                <div>
+                  <h3 class="text-24 font-semibold mb-2 text-dark">Office Location</h3>
+                  <p class="text-14 text-dark/70">Kathmandu, Nepal</p>
+                </div>
+              </div>
+              <!-- Email -->
+              <div class="flex items-start gap-6">
+                <div class="p-4 bg-primary/10 rounded-xl text-primary">
+                  <i class="fas fa-envelope text-24"></i>
+                </div>
+                <div>
+                  <h3 class="text-24 font-semibold mb-2 text-dark">Email Us</h3>
+                  <p class="text-14 text-dark/70">info@xportconnect.com</p>
+                  <p class="text-14 text-dark/70">support@xportconnect.com</p>
+                </div>
+              </div>
+              <!-- Phone -->
+              <div class="flex items-start gap-6">
+                <div class="p-4 bg-primary/10 rounded-xl text-primary">
+                  <i class="fas fa-phone text-24"></i>
+                </div>
+                <div>
+                  <h3 class="text-24 font-semibold mb-2 text-dark">Call Us</h3>
+                  <p class="text-14 text-dark/70">+977 9800000000</p>
+                  <p class="text-14 text-dark/70">+977 9800000001</p>
+                </div>
+              </div>
+              <!-- Business Hours -->
+              <div class="flex items-start gap-6">
+                <div class="p-4 bg-primary/10 rounded-xl text-primary">
+                  <i class="fas fa-clock text-24"></i>
+                </div>
+                <div>
+                  <h3 class="text-24 font-semibold mb-2 text-dark">Business Hours</h3>
+                  <p class="text-14 text-dark/70">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                  <p class="text-14 text-dark/70">Saturday: 10:00 AM - 2:00 PM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Footer Section -->
+    <footer class="bg-[#003366] text-white py-16">
+      <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <!-- Footer Logo and Description -->
+          <div class="space-y-4">
+            <h3 class="text-24 font-bold">
+              <span class="text-[#04ADEF]">XPORT</span><span class="text-white">CONNECT</span>
+            </h3>
+            <p class="text-14 text-white/90 max-w-xs">
+              We facilitate seamless imports from China and India to Nepal, ensuring a smooth and efficient connection between countries.
+            </p>
+            <div class="flex space-x-4 pt-2">
+              <a href="#" class="text-white hover:text-[#04ADEF] transition-colors">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="text-white hover:text-[#04ADEF] transition-colors">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="text-white hover:text-[#04ADEF] transition-colors">
+                <i class="fab fa-twitter"></i>
+              </a>
+            </div>
+          </div>
+          <!-- Quick Links Section -->
+          <div>
+            <h4 class="text-20 font-semibold mb-4 text-white">Quick Links</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#home"
+                   class="text-14 text-white/90 hover:text-[#04ADEF] transition-colors">Home</a>
+              </li>
+              <li>
+                <a href="#services"
+                   class="text-14 text-white/90 hover:text-[#04ADEF] transition-colors">Services</a>
+              </li>
+              <li>
+                <a href="#about"
+                   class="text-14 text-white/90 hover:text-[#04ADEF] transition-colors">About Us</a>
+              </li>
+              <li>
+                <a href="#import"
+                   class="text-14 text-white/90 hover:text-[#04ADEF] transition-colors">Import Now</a>
+              </li>
+            </ul>
+          </div>
+          <!-- Our Services Section -->
+          <div>
+            <h4 class="text-20 font-semibold mb-4 text-white">Our Services</h4>
+            <ul class="space-y-2">
+              <li class="text-14 text-white/90">Complete Import Solutions</li>
+              <li class="text-14 text-white/90">Product Sourcing</li>
+              <li class="text-14 text-white/90">Factory Connections</li>
+              <li class="text-14 text-white/90">Transportation</li>
+              <li class="text-14 text-white/90">Doorstep Delivery</li>
+            </ul>
+          </div>
+          <!-- Contact Info Section -->
+          <div>
+            <h4 class="text-20 font-semibold mb-4 text-white">Contact Info</h4>
+            <ul class="space-y-4">
+              <li class="flex items-start gap-3">
+                <i class="fas fa-map-marker-alt text-[#04ADEF] mt-1"></i>
+                <span class="text-14 text-white/90">Kathmandu, Nepal</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fas fa-phone text-[#04ADEF]"></i>
+                <span class="text-14 text-white/90">+977 9800000000</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fas fa-envelope text-[#04ADEF]"></i>
+                <span class="text-14 text-white/90">info@xportconnect.com</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Footer Bottom Section -->
+        <div class="border-t border-white/20 mt-12 pt-8">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <p class="text-12 text-white/80">
+              © <span id="year"></span> XPORTCONNECT. All rights reserved.
+            </p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+              <a href="#" class="text-12 text-white/80 hover:text-white">Privacy Policy</a>
+              <a href="#" class="text-12 text-white/80 hover:text-white">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- JavaScript -->
+    <script>
+// Set current year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Loader
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  setTimeout(() => {
+    loader.classList.add('fade-out');
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 200);
+  }, 600);
+});
+
+// Progress bar
+const progressBar = document.getElementById('progress');
+const progressBarContainer = document.getElementById('progress-bar');
+
+window.addEventListener('scroll', () => {
+  const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrolled = (window.scrollY / windowHeight) * 100;
+  
+  // Show/hide progress bar based on scroll position
+  if (window.scrollY > 50) {
+    progressBarContainer.style.opacity = '1';
+    progressBar.style.width = `${scrolled}%`;
+  } else {
+    progressBarContainer.style.opacity = '0';
+  }
+});
+
+// Navigation scroll effect
+const navbar = document.getElementById('navbar');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('navbar-scrolled', 'py-4');
+    navbar.classList.remove('py-6');
+  } else {
+    navbar.classList.remove('navbar-scrolled', 'py-4');
+    navbar.classList.add('py-6');
+  }
+});
+
+// Mobile menu
+const menuToggle = document.getElementById('menuToggle');
+const closeMenu = document.getElementById('closeMenu');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileLinks = mobileMenu.querySelectorAll('a');
+
+menuToggle.addEventListener('click', () => {
+  mobileMenu.classList.remove('translate-x-full');
+  mobileMenu.classList.add('translate-x-0');
+  document.body.style.overflow = 'hidden';
+});
+
+const closeMenuFunc = () => {
+  mobileMenu.classList.remove('translate-x-0');
+  mobileMenu.classList.add('translate-x-full');
+  document.body.style.overflow = '';
+};
+
+closeMenu.addEventListener('click', closeMenuFunc);
+mobileLinks.forEach(link => {
+  link.addEventListener('click', closeMenuFunc);
+});
+
+// Form submission
+const importForm = document.getElementById('importForm');
+const submitBtn = document.getElementById('submitBtn');
+
+importForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const productUrl = document.getElementById('product-url').value;
+  
+  if (!productUrl) {
+    alert('Please enter a product URL');
+    return;
+  }
+  
+  // Show loading state
+  submitBtn.innerHTML = `
+    <span class="flex items-center">
+      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      Processing...
+    </span>
+  `;
+  
+  // Simulate API call
+  setTimeout(() => {
+    submitBtn.innerHTML = `
+      <span class="flex items-center">
+        <i class="fas fa-check-circle mr-2"></i>
+        Request Received
+      </span>
+    `;
+    submitBtn.classList.remove('bg-primary');
+    submitBtn.classList.add('bg-green-500');
+    
+    // Reset form after delay
+    setTimeout(() => {
+      importForm.reset();
+      submitBtn.innerHTML = `
+        <span class="flex items-center">
+          Submit Import Request
+          <i class="fas fa-arrow-right ml-2"></i>
+        </span>
+      `;
+      submitBtn.classList.remove('bg-green-500');
+      submitBtn.classList.add('bg-primary');
+    }, 1000);
+  }, 1000);
+});
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section-fade').forEach(section => {
+  observer.observe(section);
+});
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    
+    const targetId = this.getAttribute('href');
+    if (targetId === '#') return;
+    
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  });
+});
+
+// Initialize Lucide Icons
+lucide.createIcons();
+    </script>
+  </body>
+</html>
